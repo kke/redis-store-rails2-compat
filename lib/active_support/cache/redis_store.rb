@@ -43,6 +43,10 @@ module ActiveSupport
         end
       end
 
+      def read(name)
+        read_multi(name)[name]
+      end
+
       # Reads multiple keys from the cache using a single call to the
       # servers for all keys. Options can be passed in the last argument.
       #
