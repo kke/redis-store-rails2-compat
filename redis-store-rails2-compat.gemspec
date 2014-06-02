@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "redis-store-rails2-compat"
-  spec.version       = '1.1.4'
+  spec.version       = '1.1.4.2'
   spec.authors       = ["Kimmo Lehto"]
   spec.email         = ["kimmo.lehto@gmail.com"]
   spec.description   = %q{Bring back the rails2 compatibility from redis-store 1.0.0.1 to 1.1.x}

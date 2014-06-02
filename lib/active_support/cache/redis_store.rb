@@ -27,11 +27,7 @@ module ActiveSupport
       end
 
       def write(name, value, options = nil)
-        options = merged_options(options)
-        instrument(:write, name, options) do |payload|
-          entry = options[:raw].present? ? value : Entry.new(value, options)
-          write_entry(namespaced_key(name, options), entry, options)
-        end
+        write_entry(namespaced_key(name, options), value, options)
       end
 
       # Delete objects for matched keys.
@@ -39,14 +35,11 @@ module ActiveSupport
       # Example:
       #   cache.del_matched "rab*"
       def delete_matched(matcher, options = nil)
-        options = merged_options(options)
-        instrument(:delete_matched, matcher.inspect) do
-          matcher = key_matcher(matcher, options)
-          begin
-            !(keys = @data.keys(matcher)).empty? && @data.del(*keys)
-          rescue Errno::ECONNREFUSED => e
-            false
-          end
+        matcher = key_matcher(matcher, options)
+        begin
+          !(keys = @data.keys(matcher)).empty? && @data.del(*keys)
+        rescue Errno::ECONNREFUSED => e
+          false
         end
       end
 
@@ -89,9 +82,7 @@ module ActiveSupport
       #   cache.increment "rabbit"
       #   cache.read "rabbit", :raw => true       # => "1"
       def increment(key, amount = 1)
-        instrument(:increment, key, :amount => amount) do
-          @data.incrby key, amount
-        end
+        @data.incrby key, amount
       end
 
       # Decrement a key in the store
@@ -116,16 +107,12 @@ module ActiveSupport
       #   cache.decrement "rabbit"
       #   cache.read "rabbit", :raw => true       # => "-1"
       def decrement(key, amount = 1)
-        instrument(:decrement, key, :amount => amount) do
-          @data.decrby key, amount
-        end
+        @data.decrby key, amount
       end
 
       # Clear all the data from the store.
       def clear
-        instrument(:clear, nil, nil) do
-          @data.flushdb
-        end
+        @data.flushdb
       end
 
       def stats
@@ -146,10 +133,7 @@ module ActiveSupport
         end
 
         def read_entry(key, options)
-          entry = @data.get key, options
-          if entry
-            entry.is_a?(ActiveSupport::Cache::Entry) ? entry : ActiveSupport::Cache::Entry.new(entry)
-          end
+          @data.get key, options
         rescue Errno::ECONNREFUSED => e
           nil
         end
