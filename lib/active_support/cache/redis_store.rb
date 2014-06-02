@@ -43,7 +43,7 @@ module ActiveSupport
         end
       end
 
-      def read(name)
+      def read(name, options=nil)
         read_multi(name)[name]
       end
 
