@@ -27,7 +27,7 @@ module ActiveSupport
       end
 
       def write(name, value, options = nil)
-        write_entry(namespaced_key(name, options), value, options)
+        write_entry(name, value, options)
       end
 
       # Delete objects for matched keys.
